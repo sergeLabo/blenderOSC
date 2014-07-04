@@ -1,11 +1,14 @@
-# Build and Release Folders
-bin/
-bin-debug/
-bin-release/
+# pyhton cache
+__pycache__/
+*.pyc
+__pycache__
 
-# Other files and folders
-.settings/
+# Geany
+*.geany
 
-# Project files, i.e. `.project`, `.actionScriptProperties` and `.flexProperties`
-# should NOT be excluded as they contain compiler settings and other important
-# information for Eclipse / Flash Builder.
+# Blender
+*.blend1
+*.blend2
+*.blend3
+*.blend4
+*.blend5
