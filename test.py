@@ -24,8 +24,6 @@
 
 import subprocess
 
-subprocess.Popen('python3 ./example/send_receive.py', shell=True)
-
 subprocess.Popen('pd-extended ./example/OSC-PureData-Blender-xy.pd', shell=True)
 
 subprocess.Popen('blender ./example/blenderOSC.blend', shell=True)

@@ -30,8 +30,7 @@ https://launchpad.net/~eighthave/+archive/pd-extended/+files/pd-extended_0.43.4-
 Run in terminal
     python3 test.py
 
-test launch:
-- send_receive.py
+test.py run in subprocess:
 - pd-extended the patch OSC-PureData-Blender-xy.pd
 - blender
 
