@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # -*- coding: UTF-8 -*-
 
-## blenderOSC_init.py
+## test.py
 
 #############################################################################
 # Copyright (C) Labomedia July 2014
@@ -22,27 +22,10 @@
 #
 #############################################################################
 
+import subprocess
 
-from bge import logic as gl
+subprocess.Popen('python3 ./example/send_receive.py', shell=True)
 
-'''The directory with blender scripts must be "scripts" (without quote).'''
-from scripts.send_receive import Receive, Send
+subprocess.Popen('pd-extended ./example/OSC-PureData-Blender-xy.pd', shell=True)
 
-
-'''
-this script run only once at the first frame
-to initialize some variable, attribut of GameLogic
-and used always during the game
-'''
-
-gl.ip_in = "127.0.0.1"
-gl.ip_out = "127.0.0.1"
-gl.port_in = 9000
-gl.port_out = 8000
-gl.buffer_size = 1024
-
-# Listener python object
-gl.my_receiver = Receive(gl.ip_in, gl.port_in, gl.buffer_size, verbose=True)
-
-# Sender python object
-gl.my_sender = Send(verbose=True)
+subprocess.Popen('blender ./example/blenderOSC.blend', shell=True)

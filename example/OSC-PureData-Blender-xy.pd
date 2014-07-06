@@ -1,0 +1,66 @@
+#N canvas 88 421 743 415 12;
+#X declare -lib mrpeach;
+#X msg 221 267 disconnect;
+#X text 512 5 Receive example;
+#X obj 25 175 import mrpeach;
+#X obj 196 173 packOSC;
+#X obj 196 313 udpsend;
+#X obj 196 355 tgl 15 0 empty empty empty 8 -8 0 10 -4034 -1 -1 0 1
+;
+#X obj 36 44 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 0 1;
+#X msg 33 80 send /forward \$1;
+#X obj 199 43 hsl 128 15 0 0.5 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 3700 1;
+#X msg 196 80 send /back \$1;
+#X obj 488 189 cnv 15 200 40 empty empty empty 20 12 0 14 -4034 -66577
+0;
+#X obj 519 91 unpackOSC;
+#X obj 519 126 pipelist;
+#X obj 522 287 hsl 128 15 -15 15 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 310 1;
+#X text 74 6 Send example without bundles;
+#X msg -16 38 0.3;
+#X obj 519 199 routeOSC /x;
+#X obj 519 163 routeOSC /blender /toto;
+#X obj 31 6 bng 15 250 50 0 empty empty empty 17 7 0 10 -262144 -1
+-1;
+#N canvas 3 80 726 496 XY 0;
+#X msg 120 355 send /pos-X \$1;
+#X obj 123 185 hsl 70 10 -15 15 0 0 empty empty empty -2 -8 0 10 -262144
+-1 -1 4900 1;
+#X obj 143 142 init 0;
+#X obj 105 61 init 0;
+#X msg 105 305 send /pos-Y \$1;
+#X obj 105 107 vsl 10 70 -15 15 0 0 empty empty empty 0 -9 0 10 -262144
+-1 -1 2800 1;
+#X obj 105 390 outlet;
+#X text 154 165 X;
+#X text 118 131 Y;
+#X connect 0 0 6 0;
+#X connect 1 0 0 0;
+#X connect 2 0 1 0;
+#X connect 3 0 5 0;
+#X connect 4 0 6 0;
+#X connect 5 0 4 0;
+#X coords 0 -1 1 1 100 100 2 100 100;
+#X restore 372 73 pd XY;
+#X msg 12 236 connect localhost 9000;
+#X obj 519 45 udpreceive 8000;
+#X connect 0 0 4 0;
+#X connect 3 0 4 0;
+#X connect 4 0 5 0;
+#X connect 6 0 7 0;
+#X connect 7 0 3 0;
+#X connect 8 0 9 0;
+#X connect 9 0 3 0;
+#X connect 11 0 12 0;
+#X connect 11 1 12 1;
+#X connect 12 0 17 0;
+#X connect 15 0 7 0;
+#X connect 16 0 13 0;
+#X connect 17 0 16 0;
+#X connect 18 0 15 0;
+#X connect 19 0 3 0;
+#X connect 20 0 4 0;
+#X connect 21 0 11 0;

@@ -22,17 +22,32 @@
 #
 #############################################################################
 
+'''
+This script run at all frame.
+'''
 
+import random
 from bge import logic as gl
-'''osc.py must be in "scripts" (without quote) directory'''
-from scripts import osc
-
 
 # Listen every frame
 gl.data = gl.my_receiver.listen()
 
-# Send stuff
-msg = osc.Message("/from")
-msg.add(u'very funny')
+# Default position
+x, y = 0, 0
 
-gl.my_sender.osc_sendto(msg, gl.ip_out, gl.port_out)
+# Get x, y in data OSC message
+if gl.data:
+    if "/pos-X" in gl.data:
+        x = gl.data[2]
+        print (x)
+    if "/pos-Y" in gl.data:
+        y = gl.data[2]
+
+# Move the Cube
+controller = gl.getCurrentController()
+owner = controller.owner
+owner.localPosition = [0.3*x, 0.3*y, 0]
+
+# Send
+res = 30*random.random() - 15  # from 15 to 15
+gl.my_sender.simple_send_to("/blender/x", res, (gl.ip_out, gl.port_out))
