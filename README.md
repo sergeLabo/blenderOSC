@@ -1,8 +1,10 @@
 ## blenderOSC
 
-Send and receive OSC message in Blender Game Engine with python 3.4, on UDP.
+Send and receive OSC message in Blender Game Engine with python 3.4, on UDP,
 
 easily, in an example.
+
+String are latin-1 encoded and decoded.
 
 ### Requirements
 

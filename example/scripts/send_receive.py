@@ -42,6 +42,8 @@ Blender Game Engine in python script.
 
 Blender Game engine don't accept thread, twisted, socketserver, asyncio ...
 
+String are latin-1 encoded and decoded.
+
 '''
 
 
@@ -122,7 +124,7 @@ class Send():
         self.verb = verbose
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
-    def _sendto(self, msg, address):
+    def send_to(self, msg, address):
         '''Send msg to address = tuple = (ip:port)
         msg is an OSC message create with OSCMessage()
         address is a tuple.
@@ -140,15 +142,14 @@ class Send():
         simple_send_to((127.0.0.1, 8000), "/spam", 1.023)
         '''
         msg = OSCMessage(title, value)
-        self._sendto(msg, address)
+        self.send_to(msg, address)
         if self.verb:
             print("OSC message sended: {0}".format(msg))
 
 
 if __name__ == "__main__":
-    # only to test this script standalone with pure data
-    # Test only this script in terminal in the example directory
-    # so you can find the scripts directory
+    # impossible character
+    ##'Œ', œ, 合久必分, 分久必合 :
     from time import sleep
 
     buffer_size = 1024
@@ -159,36 +160,80 @@ if __name__ == "__main__":
     ip_out = "127.0.0.1"
     port_out = 9000
 
-    my_receiver = Receive(ip_in, port_in, buffer_size, verbose=True)
+    my_receiver = Receive(ip_in, port_in, buffer_size, verbose=False)
+    my_sender = Send(verbose=False)
 
-    my_sender = Send(verbose=True)
+    print("\n\nTest bug unicode\n")
+    test = ['éé éé']
 
-    print("verif decod", decodeOSC(b'/blender/x\x00\x00,f\x00\x00>\xaf\xbcf'))
+    msg = OSCMessage("/test")
+    msg.append(1)
+    msg.append(test)
+    msg.append("ça va")
+    msg.append("où été")
+    msg.append(1.23)
 
+    my_sender.send_to(msg, (ip_out, port_out))
+    sleep(0.01)
+    res = my_receiver.listen()
+    if res:
+        print(res)
+
+    #######################################################################
     type_list = [
-    1, 1.234587, "Sauvons l'Humanite", [1, 2.456, "toto"],
+    1, 1.234587, "Amour", [1, 2.456, "toto"],
     {1:2, 3:4},
     ]
-    a = 0
     print("\n\nTest type")
     for test in type_list:
-        a += 1
-        sleep(0.1)
-        my_sender.simple_send_to("/test/" + str(a), test,
-                                (ip_out, port_out))
-        my_receiver.listen()
-
+        my_sender.simple_send_to("/test/", test, (ip_out, port_out))
+        sleep(0.01)
+        res = my_receiver.listen()
+        if res:
+            print(test, "=", res[2])
+##
+    #######################################################################
     print("\n\nTest unicode")
     unicode_list = ['é', 'à', 'é', 'ù', 'î','ê','@','ô','ï','ö','Â',
-                    'mais enfin', 'é è', '@ é è', 'étù', 'œuvre',
+                    '[', '}', '{', ']', '|', '#', '~', '%', '<', '>',
+                     'Ä', 'Ö', 'Ü', 'Ô', 'ë', '.', ',', ';', '/', '*', '+', '-',
+                     '0123456789',
+                     'abcdefghijklmnopqrstuvwxyz',
+                     'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+                    'mais enfin', 'é è', '@ é è', 'étù', 'oeuvre',
                     "Ô ! léopard semblables,",
                     "N'ont que l'habit pour tous talents!"
                     ]
-    b = 0
+
     for test in unicode_list:
-        b += 1
-        sleep(0.1)
-        print(test)
-        my_sender.simple_send_to("/test/" + str(b), test,
-                                (ip_out, port_out))
-        my_receiver.listen()
+        my_sender.simple_send_to("/test/", test, (ip_out, port_out))
+        sleep(0.01)
+        res = my_receiver.listen()
+        if res:
+            print(test, "=", res[2])
+
+    #######################################################################
+    print("\n\nTest bug unicode")
+    bug_list = ['éé', 'é ù', 'é é', 'à é', 'ù à',
+                "je l'ai emporté à la maison !",
+                "tu es un enfoiré",
+                '''
+    sur un arbre perché,
+    c'était un péché (et non pas pêcher).
+                ''',
+                "à la claire fontaine,\nj'ai chanté tout l'été.",
+                "\n",
+                "j'ai bien un saut de ligne. fin",
+                "dispersée, se recomposera »."
+                ]
+
+    for test in bug_list:
+        my_sender.simple_send_to("/test/", test, (ip_out, port_out))
+        sleep(0.01)
+        res = my_receiver.listen()
+        if res:
+            print(test, "=", res[2])
+##
+    #######################################################################
+
+
