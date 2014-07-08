@@ -43,6 +43,14 @@ Blender Game Engine in python script.
 Blender Game engine don't accept thread, twisted, socketserver, asyncio ...
 
 String are latin-1 encoded and decoded.
+    ISO 8859-1 = ISO/CEI 8859-1 = Latin-1
+
+To receive or send unicode string, don't use OSC.
+
+Use listen_unicode() in send_receive.py to receive UDP data without OSC.
+Send with socket.sendto(data, address)
+
+and data = "your unicode string".encode('utf-8')
 
 '''
 
@@ -92,11 +100,27 @@ class Receive:
         '''Return decoded OSC data in a list, or None.'''
         try:
             raw_data = self.sock.recv(self.buffer_size)
-            ##if self.verb:
-                ##print("Binary received from {0}:{1} : {2}".format(self.ip,
-                                                ##self.port, raw_data))
+            if self.verb:
+                print("Binary received from {0}:{1} : {2}".format(self.ip,
+                                                self.port, raw_data))
             self.convert_data(raw_data)
         except:
+            if self.verb:
+                print('Nothing from {0}:{1}'.format(self.ip, self.port))
+        return self.data
+
+    def listen_unicode(self):
+        '''Only to receive data without OSC.
+        Sended data must be encoded with 'utf-8'.
+        Return raw data decoded with 'utf-8', or None.'''
+        try:
+            raw_data = self.sock.recv(self.buffer_size)
+            if self.verb:
+                print("Receive from {0}:{1} : {2}".format(self.ip,
+                                                self.port, raw_data))
+            self.data = raw_data.decode('utf-8')
+        except:
+            self.data = None
             if self.verb:
                 print('Nothing from {0}:{1}'.format(self.ip, self.port))
         return self.data
@@ -145,95 +169,3 @@ class Send():
         self.send_to(msg, address)
         if self.verb:
             print("OSC message sended: {0}".format(msg))
-
-
-if __name__ == "__main__":
-    # impossible character
-    ##'Œ', œ, 合久必分, 分久必合 :
-    from time import sleep
-
-    buffer_size = 1024
-
-    ip_in = "127.0.0.1"
-    port_in = 9000
-
-    ip_out = "127.0.0.1"
-    port_out = 9000
-
-    my_receiver = Receive(ip_in, port_in, buffer_size, verbose=False)
-    my_sender = Send(verbose=False)
-
-    print("\n\nTest bug unicode\n")
-    test = ['éé éé']
-
-    msg = OSCMessage("/test")
-    msg.append(1)
-    msg.append(test)
-    msg.append("ça va")
-    msg.append("où été")
-    msg.append(1.23)
-
-    my_sender.send_to(msg, (ip_out, port_out))
-    sleep(0.01)
-    res = my_receiver.listen()
-    if res:
-        print(res)
-
-    #######################################################################
-    type_list = [
-    1, 1.234587, "Amour", [1, 2.456, "toto"],
-    {1:2, 3:4},
-    ]
-    print("\n\nTest type")
-    for test in type_list:
-        my_sender.simple_send_to("/test/", test, (ip_out, port_out))
-        sleep(0.01)
-        res = my_receiver.listen()
-        if res:
-            print(test, "=", res[2])
-##
-    #######################################################################
-    print("\n\nTest unicode")
-    unicode_list = ['é', 'à', 'é', 'ù', 'î','ê','@','ô','ï','ö','Â',
-                    '[', '}', '{', ']', '|', '#', '~', '%', '<', '>',
-                     'Ä', 'Ö', 'Ü', 'Ô', 'ë', '.', ',', ';', '/', '*', '+', '-',
-                     '0123456789',
-                     'abcdefghijklmnopqrstuvwxyz',
-                     'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-                    'mais enfin', 'é è', '@ é è', 'étù', 'oeuvre',
-                    "Ô ! léopard semblables,",
-                    "N'ont que l'habit pour tous talents!"
-                    ]
-
-    for test in unicode_list:
-        my_sender.simple_send_to("/test/", test, (ip_out, port_out))
-        sleep(0.01)
-        res = my_receiver.listen()
-        if res:
-            print(test, "=", res[2])
-
-    #######################################################################
-    print("\n\nTest bug unicode")
-    bug_list = ['éé', 'é ù', 'é é', 'à é', 'ù à',
-                "je l'ai emporté à la maison !",
-                "tu es un enfoiré",
-                '''
-    sur un arbre perché,
-    c'était un péché (et non pas pêcher).
-                ''',
-                "à la claire fontaine,\nj'ai chanté tout l'été.",
-                "\n",
-                "j'ai bien un saut de ligne. fin",
-                "dispersée, se recomposera »."
-                ]
-
-    for test in bug_list:
-        my_sender.simple_send_to("/test/", test, (ip_out, port_out))
-        sleep(0.01)
-        res = my_receiver.listen()
-        if res:
-            print(test, "=", res[2])
-##
-    #######################################################################
-
-

@@ -4,7 +4,18 @@ Send and receive OSC message in Blender Game Engine with python 3.4, on UDP,
 
 easily, in an example.
 
+
+### Limitation
 String are latin-1 encoded and decoded.
+
+    ISO 8859-1 = ISO/CEI 8859-1 = Latin-1
+
+To receive or send unicode string, don't use OSC.
+
+Use listen_unicode() in send_receive.py to receive UDP data without OSC.
+Send with socket.sendto(data, address)
+
+and data = "your unicode string".encode('utf-8')
 
 ### Requirements
 
