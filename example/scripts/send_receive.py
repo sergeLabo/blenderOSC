@@ -79,7 +79,6 @@ class Receive:
         self.verb = verbose
         self.data = None
 
-
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
             self.sock.bind((self.ip, self.port))
@@ -96,18 +95,39 @@ class Receive:
             if self.verb:
                 print('No connected on {0}:{1}'.format(self.ip, self.port))
 
+    def get_data(self):
+        '''Get received data.'''
+        self.listen()
+        return self.data
+
     def listen(self):
-        '''Return decoded OSC data in a list, or None.'''
+        '''Get decoded received data, OSC in a list or string unicode.'''
+        raw_data = None
         try:
             raw_data = self.sock.recv(self.buffer_size)
             if self.verb:
                 print("Binary received from {0}:{1} : {2}".format(self.ip,
                                                 self.port, raw_data))
-            self.convert_data(raw_data)
         except:
             if self.verb:
                 print('Nothing from {0}:{1}'.format(self.ip, self.port))
-        return self.data
+        if raw_data:
+            self.data = self.convert_data(raw_data)
+
+    def convert_data(self, raw_data):
+        '''From raw binary data, return decoded OSC data in a list,
+        or unicode string .
+        '''
+        data = None
+        try:
+            data = decodeOSC(raw_data)
+            if self.verb:
+                print("Decoded OSC message: {0}".format(self.data))
+        except:
+            data = raw_data.decode('utf-8')
+            if self.verb:
+                print('No OSC message in {0}'.format(raw_data))
+        return data
 
     def listen_unicode(self):
         '''Only to receive data without OSC.
@@ -125,15 +145,6 @@ class Receive:
                 print('Nothing from {0}:{1}'.format(self.ip, self.port))
         return self.data
 
-    def convert_data(self, raw_data):
-        '''Return decoded data in a list, from raw binary data.'''
-        try:
-            self.data = decodeOSC(raw_data)
-            if self.verb:
-                print("Decoded OSC message: {0}".format(self.data))
-        except:
-            if self.verb:
-                print('Impossible to decode {0}'.format(raw_data))
 
 class Send():
     '''Create your OSC messge with OSCcodec,

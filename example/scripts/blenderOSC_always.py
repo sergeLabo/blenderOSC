@@ -30,23 +30,21 @@ import random
 from bge import logic as gl
 
 # Listen every frame
-gl.data = gl.my_receiver.listen()
-
-# Default position
-x, y = 0, 0
+gl.data = gl.my_receiver.get_data()
 
 # Get x, y in data OSC message
 if gl.data:
     if "/pos-X" in gl.data:
-        x = gl.data[2]
+        gl.x = gl.data[2]
         print (x)
     if "/pos-Y" in gl.data:
-        y = gl.data[2]
+        gl.y = gl.data[2]
+# if not gl.data, gl.x and gl.y don't change, the cube is already at the same place
 
 # Move the Cube
 controller = gl.getCurrentController()
 owner = controller.owner
-owner.localPosition = [0.3*x, 0.3*y, 0]
+owner.localPosition = [0.3*gl.x, 0.3*gl.y, 0]
 
 # Send
 res = 30*random.random() - 15  # from 15 to 15

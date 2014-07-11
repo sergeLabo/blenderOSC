@@ -76,9 +76,12 @@ port&nbsp;=&nbsp;integer<br>
 buffer_size&nbsp;=&nbsp;integer,&nbsp;used&nbsp;to&nbsp;clear&nbsp;out&nbsp;the&nbsp;buffer&nbsp;at&nbsp;each&nbsp;reading<br>
 verbose&nbsp;=&nbsp;True&nbsp;is&nbsp;very&nbsp;verbose&nbsp;in&nbsp;terminal</tt></dd></dl>
 
-<dl><dt><a name="Receive-convert_data"><strong>convert_data</strong></a>(self, raw_data)</dt><dd><tt>Return&nbsp;decoded&nbsp;data&nbsp;in&nbsp;a&nbsp;list,&nbsp;from&nbsp;raw&nbsp;binary&nbsp;data.</tt></dd></dl>
+<dl><dt><a name="Receive-convert_data"><strong>convert_data</strong></a>(self, raw_data)</dt><dd><tt>From&nbsp;raw&nbsp;binary&nbsp;data,&nbsp;return&nbsp;decoded&nbsp;OSC&nbsp;data&nbsp;in&nbsp;a&nbsp;list,<br>
+or&nbsp;unicode&nbsp;string&nbsp;.</tt></dd></dl>
 
-<dl><dt><a name="Receive-listen"><strong>listen</strong></a>(self)</dt><dd><tt>Return&nbsp;decoded&nbsp;OSC&nbsp;data&nbsp;in&nbsp;a&nbsp;list,&nbsp;or&nbsp;None.</tt></dd></dl>
+<dl><dt><a name="Receive-get_data"><strong>get_data</strong></a>(self)</dt><dd><tt>Get&nbsp;received&nbsp;data.</tt></dd></dl>
+
+<dl><dt><a name="Receive-listen"><strong>listen</strong></a>(self)</dt><dd><tt>Get&nbsp;decoded&nbsp;received&nbsp;data,&nbsp;OSC&nbsp;in&nbsp;a&nbsp;list&nbsp;or&nbsp;string&nbsp;unicode.</tt></dd></dl>
 
 <dl><dt><a name="Receive-listen_unicode"><strong>listen_unicode</strong></a>(self)</dt><dd><tt>Only&nbsp;to&nbsp;receive&nbsp;data&nbsp;without&nbsp;OSC.<br>
 Sended&nbsp;data&nbsp;must&nbsp;be&nbsp;encoded&nbsp;with&nbsp;'utf-8'.<br>
