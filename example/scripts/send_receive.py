@@ -95,6 +95,24 @@ class Receive:
             if self.verb:
                 print('No connected on {0}:{1}'.format(self.ip, self.port))
 
+    def send_with_receiver_socket(self):
+        self.sock.sendto(data, addr)
+
+    def listen_from(self):
+        '''Get decoded received data, OSC in a list or string unicode.'''
+        raw_data = None
+        try:
+            # bytes, address
+            raw_data, addr = self.sock.recvfrom(self.buffer_size)
+            if self.verb:
+                print("Binary received from {0}:{1} : {2}".format(self.ip,
+                                                self.port, raw_data))
+        except:
+            if self.verb:
+                print('Nothing from {0}:{1}'.format(self.ip, self.port))
+        if raw_data:
+            self.data = self.convert_data(raw_data)
+
     def get_data(self):
         '''Get received data.'''
         self.listen()
@@ -159,10 +177,13 @@ class Send():
         self.verb = verbose
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
+    def send_str_to(self, string, address):
+        '''Send unicode string to address = tuple = (ip:port).'''
+        self.sock.sendto(string.encode("utf-8"), address)
+
     def send_to(self, msg, address):
         '''Send msg to address = tuple = (ip:port)
-        msg is an OSC message create with OSCMessage()
-        address is a tuple.
+        msg is an OSC message create with OSCMessage().
         '''
         self.sock.sendto(msg.getBinary(), address)
 

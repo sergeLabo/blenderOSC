@@ -62,6 +62,17 @@ del timegm
 global NTP_units_per_second
 NTP_units_per_second = 0x100000000 # about 232 picoseconds
 
+
+class OSCError(Exception):
+    """Base Class for all OSC-related errors
+    """
+    def __init__(self, message):
+        self.message = message
+
+    def __str__(self):
+        return self.message
+
+
 ######
 #
 # OSCMessage classes
