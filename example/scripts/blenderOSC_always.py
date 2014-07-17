@@ -36,7 +36,6 @@ gl.data = gl.my_receiver.get_data()
 if gl.data:
     if "/pos-X" in gl.data:
         gl.x = gl.data[2]
-        print (x)
     if "/pos-Y" in gl.data:
         gl.y = gl.data[2]
 # if not gl.data, gl.x and gl.y don't change, the cube is already at the same place
