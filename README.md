@@ -4,6 +4,14 @@ Send and receive OSC message in Blender Game Engine with python 3.4, on UDP,
 
 easily, in an example.
 
+### Content
+
+class Receive only to receive and decode
+
+class Send to send binary osc message or encoded string
+
+class Client to send and receive, but without decoding.
+
 
 ### Limitation
 String are latin-1 encoded and decoded.
@@ -13,6 +21,7 @@ String are latin-1 encoded and decoded.
 To receive or send unicode string, don't use OSC.
 
 Use listen_unicode() in send_receive.py to receive UDP data without OSC.
+
 Send with socket.sendto(data, address)
 
 and data = "your unicode string".encode('utf-8')
@@ -60,4 +69,3 @@ Thanks to:
 ### License
 Skandal is released under the GENERAL PUBLIC LICENSE Version 2, June 1991.
 See the bundled LICENSE file for details.
-

@@ -24,6 +24,8 @@
 
 
 '''
+Only to be used in the Blender 3D Game Engine.
+
 Send class send UDP OSC message,
 Receive class receive OSC message.
 Build with python3 socket standard module.
@@ -56,6 +58,7 @@ and data = "your unicode string".encode('utf-8')
 
 
 import socket
+
 try:
     # to run standalone
     from OSCcodec import OSCMessage, decodeOSC
@@ -63,9 +66,12 @@ except:
     # to run in blender scripts directory
     from scripts.OSCcodec import OSCMessage, decodeOSC
 
+from datagram_decode import Decode
+
 
 class Receive:
-    '''Receive, decode OSC Message with a socket .'''
+    '''Receive, decode Message with a socket .'''
+
     def __init__(self, ip, port, buffer_size=1024, verbose=False):
         '''Plug an UDP socket.
         ip example: "localhost", "127.0.0.1", "10.0.0.100"
@@ -95,7 +101,8 @@ class Receive:
             if self.verb:
                 print('No connected on {0}:{1}'.format(self.ip, self.port))
 
-    def send_with_receiver_socket(self):
+    def send_with_receiver_socket(self, data, addr):
+        '''Send data with this socket.'''
         self.sock.sendto(data, addr)
 
     def listen_from(self):
@@ -164,7 +171,7 @@ class Receive:
         return self.data
 
 
-class Send():
+class Send:
     '''Create your OSC messge with OSCcodec,
     example:
     msg = OSCMessage("/my/osc/address")
@@ -178,11 +185,11 @@ class Send():
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 
     def send_str_to(self, string, address):
-        '''Send unicode string to address = tuple = (ip:port).'''
+        '''Send unicode string to address = (ip, port).'''
         self.sock.sendto(string.encode("utf-8"), address)
 
     def send_to(self, msg, address):
-        '''Send msg to address = tuple = (ip:port)
+        '''Send msg to address = tuple = (ip, port)
         msg is an OSC message create with OSCMessage().
         '''
         self.sock.sendto(msg.getBinary(), address)
@@ -201,3 +208,88 @@ class Send():
         self.send_to(msg, address)
         if self.verb:
             print("OSC message sended: {0}".format(msg))
+
+
+class Client:
+    '''Send and Receive with the same socket.
+
+    Send a request, and get the response of a sever.
+    datas aren't encoded and decoded in this class.
+    Use datagram_decode.py to decode.
+    '''
+
+    def __init__(self, ip, port, buffer_size=1024, verbose=False):
+        '''Plug an UDP socket.
+        ip example: "localhost", "127.0.0.1", "10.0.0.100"
+        port = integer
+        buffer_size = integer, used to clear out the buffer at each reading
+        verbose = True is very verbose in terminal
+        '''
+        self.ip = ip
+        self.port = port
+        self.buffer_size = buffer_size
+        self.verb = verbose
+        self.conn = False
+        self.data = None
+
+        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        try:
+            self.sock.bind((self.ip, self.port))
+            self.sock.setblocking(False)
+            self.sock.settimeout(0.01)
+            # This option set buffer size
+            # Every self.sock.recv() empty the buffer,
+            # so we have always the last incomming value
+            self.sock.setsockopt(socket.SOL_SOCKET, socket.SO_RCVBUF, buffer_size)
+            if self.verb:
+                print('Plug : IP = {} Port = {} Buffer Size = {}'.
+                      format(ip, port, buffer_size))
+        except:
+            if self.verb:
+                print('No connected on {0}:{1}'.format(self.ip, self.port))
+
+    def send(self, req):
+        '''Send request to connected socket.'''
+        addr = self.ip, self.port
+        self.sock.connect(addr)
+        self.sock.send(req)
+        if self.verb:
+            print('{0} sended'.format(req))
+
+    def send_to(self, req, address):
+        '''Send request to address = (ip, port)
+        '''
+        self.sock.sendto(req, address)
+        if self.verb:
+            print('{0} sended'.format(req))
+
+    def listen(self):
+        '''Return received data and address from.'''
+        raw_data, addr = None, None
+        try:
+            raw_data, addr = self.sock.recvfrom(self.buffer_size)
+            if self.verb:
+                print("Binary received from {0}: {1}".format(addr, raw_data))
+        except:
+            if self.verb:
+                print('Received nothing')
+        return raw_data, addr
+
+
+if __name__ == '__main__':
+    from time import sleep
+    host = "127.0.0.1"
+    port = 8000
+    buff = 1024
+
+    myclient = Client(host, port, buff, False)
+    mydecoder = Decode()
+    while True:
+        req = u"test".encode("utf-8")
+        myclient.send(req)
+        raw_data, addr = myclient.listen()
+        print(addr)
+        decod, typ = mydecoder.decode(raw_data)
+        print(decod["text"])
+        print(decod["/blender/x"])
+        sleep(1)
