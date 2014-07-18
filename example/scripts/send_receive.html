@@ -9,7 +9,9 @@
 <font color="#ffffff" face="helvetica, arial">&nbsp;<br><big><big><strong>send_receive</strong></big></big></font></td
 ><td align=right valign=bottom
 ><font color="#ffffff" face="helvetica, arial"><a href=".">index</a><br><a href="file:/media/data500/major_files/3_D/3D_current/aprojets/blenderOSC/example/scripts/send_receive.py">/media/data500/major_files/3_D/3D_current/aprojets/blenderOSC/example/scripts/send_receive.py</a></font></td></tr></table>
-    <p><tt><a href="#Send">Send</a>&nbsp;class&nbsp;send&nbsp;UDP&nbsp;OSC&nbsp;message,<br>
+    <p><tt>Only&nbsp;to&nbsp;be&nbsp;used&nbsp;in&nbsp;the&nbsp;Blender&nbsp;3D&nbsp;Game&nbsp;Engine.<br>
+&nbsp;<br>
+<a href="#Send">Send</a>&nbsp;class&nbsp;send&nbsp;UDP&nbsp;OSC&nbsp;message,<br>
 <a href="#Receive">Receive</a>&nbsp;class&nbsp;receive&nbsp;OSC&nbsp;message.<br>
 Build&nbsp;with&nbsp;python3&nbsp;socket&nbsp;standard&nbsp;module.<br>
 &nbsp;<br>
@@ -55,7 +57,8 @@ and&nbsp;data&nbsp;=&nbsp;"your&nbsp;unicode&nbsp;string".encode('utf-8')</tt></
 <dt><font face="helvetica, arial"><a href="builtins.html#object">builtins.object</a>
 </font></dt><dd>
 <dl>
-<dt><font face="helvetica, arial"><a href="send_receive.html#Receive">Receive</a>
+<dt><font face="helvetica, arial"><a href="send_receive.html#Client">Client</a>
+</font></dt><dt><font face="helvetica, arial"><a href="send_receive.html#Receive">Receive</a>
 </font></dt><dt><font face="helvetica, arial"><a href="send_receive.html#Send">Send</a>
 </font></dt></dl>
 </dd>
@@ -64,10 +67,44 @@ and&nbsp;data&nbsp;=&nbsp;"your&nbsp;unicode&nbsp;string".encode('utf-8')</tt></
 <table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
 <tr bgcolor="#ffc8d8">
 <td colspan=3 valign=bottom>&nbsp;<br>
+<font color="#000000" face="helvetica, arial"><a name="Client">class <strong>Client</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
+    
+<tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
+<td colspan=2><tt><a href="#Send">Send</a>&nbsp;and&nbsp;<a href="#Receive">Receive</a>&nbsp;with&nbsp;the&nbsp;same&nbsp;socket.<br>
+&nbsp;<br>
+<a href="#Send">Send</a>&nbsp;a&nbsp;request,&nbsp;and&nbsp;get&nbsp;the&nbsp;response&nbsp;of&nbsp;a&nbsp;sever.<br>
+datas&nbsp;aren't&nbsp;encoded&nbsp;and&nbsp;decoded&nbsp;in&nbsp;this&nbsp;class.<br>
+Use&nbsp;datagram_decode.py&nbsp;to&nbsp;decode.<br>&nbsp;</tt></td></tr>
+<tr><td>&nbsp;</td>
+<td width="100%">Methods defined here:<br>
+<dl><dt><a name="Client-__init__"><strong>__init__</strong></a>(self, ip, port, buffer_size=1024, verbose=False)</dt><dd><tt>Plug&nbsp;an&nbsp;UDP&nbsp;socket.<br>
+ip&nbsp;example:&nbsp;"localhost",&nbsp;"127.0.0.1",&nbsp;"10.0.0.100"<br>
+port&nbsp;=&nbsp;integer<br>
+buffer_size&nbsp;=&nbsp;integer,&nbsp;used&nbsp;to&nbsp;clear&nbsp;out&nbsp;the&nbsp;buffer&nbsp;at&nbsp;each&nbsp;reading<br>
+verbose&nbsp;=&nbsp;True&nbsp;is&nbsp;very&nbsp;verbose&nbsp;in&nbsp;terminal</tt></dd></dl>
+
+<dl><dt><a name="Client-listen"><strong>listen</strong></a>(self)</dt><dd><tt>Return&nbsp;received&nbsp;data&nbsp;and&nbsp;address&nbsp;from.</tt></dd></dl>
+
+<dl><dt><a name="Client-send"><strong>send</strong></a>(self, req)</dt><dd><tt><a href="#Send">Send</a>&nbsp;request&nbsp;to&nbsp;connected&nbsp;socket.</tt></dd></dl>
+
+<dl><dt><a name="Client-send_to"><strong>send_to</strong></a>(self, req, address)</dt><dd><tt><a href="#Send">Send</a>&nbsp;request&nbsp;to&nbsp;address&nbsp;=&nbsp;(ip,&nbsp;port)</tt></dd></dl>
+
+<hr>
+Data descriptors defined here:<br>
+<dl><dt><strong>__dict__</strong></dt>
+<dd><tt>dictionary&nbsp;for&nbsp;instance&nbsp;variables&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+<dl><dt><strong>__weakref__</strong></dt>
+<dd><tt>list&nbsp;of&nbsp;weak&nbsp;references&nbsp;to&nbsp;the&nbsp;object&nbsp;(if&nbsp;defined)</tt></dd>
+</dl>
+</td></tr></table> <p>
+<table width="100%" cellspacing=0 cellpadding=2 border=0 summary="section">
+<tr bgcolor="#ffc8d8">
+<td colspan=3 valign=bottom>&nbsp;<br>
 <font color="#000000" face="helvetica, arial"><a name="Receive">class <strong>Receive</strong></a>(<a href="builtins.html#object">builtins.object</a>)</font></td></tr>
     
 <tr bgcolor="#ffc8d8"><td rowspan=2><tt>&nbsp;&nbsp;&nbsp;</tt></td>
-<td colspan=2><tt><a href="#Receive">Receive</a>,&nbsp;decode&nbsp;OSC&nbsp;Message&nbsp;with&nbsp;a&nbsp;socket&nbsp;.<br>&nbsp;</tt></td></tr>
+<td colspan=2><tt><a href="#Receive">Receive</a>,&nbsp;decode&nbsp;Message&nbsp;with&nbsp;a&nbsp;socket&nbsp;.<br>&nbsp;</tt></td></tr>
 <tr><td>&nbsp;</td>
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Receive-__init__"><strong>__init__</strong></a>(self, ip, port, buffer_size=1024, verbose=False)</dt><dd><tt>Plug&nbsp;an&nbsp;UDP&nbsp;socket.<br>
@@ -89,7 +126,7 @@ or&nbsp;unicode&nbsp;string&nbsp;.</tt></dd></dl>
 Sended&nbsp;data&nbsp;must&nbsp;be&nbsp;encoded&nbsp;with&nbsp;'utf-8'.<br>
 Return&nbsp;raw&nbsp;data&nbsp;decoded&nbsp;with&nbsp;'utf-8',&nbsp;or&nbsp;None.</tt></dd></dl>
 
-<dl><dt><a name="Receive-send_with_receiver_socket"><strong>send_with_receiver_socket</strong></a>(self)</dt></dl>
+<dl><dt><a name="Receive-send_with_receiver_socket"><strong>send_with_receiver_socket</strong></a>(self, data, addr)</dt><dd><tt><a href="#Send">Send</a>&nbsp;data&nbsp;with&nbsp;this&nbsp;socket.</tt></dd></dl>
 
 <hr>
 Data descriptors defined here:<br>
@@ -115,9 +152,9 @@ See&nbsp;OSCcodec&nbsp;documentation&nbsp;in&nbsp;OSCcodec.html.<br>&nbsp;</tt><
 <td width="100%">Methods defined here:<br>
 <dl><dt><a name="Send-__init__"><strong>__init__</strong></a>(self, verbose=True)</dt><dd><tt>Create&nbsp;an&nbsp;UDP&nbsp;socket.</tt></dd></dl>
 
-<dl><dt><a name="Send-send_str_to"><strong>send_str_to</strong></a>(self, string, address)</dt><dd><tt><a href="#Send">Send</a>&nbsp;unicode&nbsp;string&nbsp;to&nbsp;address&nbsp;=&nbsp;tuple&nbsp;=&nbsp;(ip:port).</tt></dd></dl>
+<dl><dt><a name="Send-send_str_to"><strong>send_str_to</strong></a>(self, string, address)</dt><dd><tt><a href="#Send">Send</a>&nbsp;unicode&nbsp;string&nbsp;to&nbsp;address&nbsp;=&nbsp;(ip,&nbsp;port).</tt></dd></dl>
 
-<dl><dt><a name="Send-send_to"><strong>send_to</strong></a>(self, msg, address)</dt><dd><tt><a href="#Send">Send</a>&nbsp;msg&nbsp;to&nbsp;address&nbsp;=&nbsp;tuple&nbsp;=&nbsp;(ip:port)<br>
+<dl><dt><a name="Send-send_to"><strong>send_to</strong></a>(self, msg, address)</dt><dd><tt><a href="#Send">Send</a>&nbsp;msg&nbsp;to&nbsp;address&nbsp;=&nbsp;tuple&nbsp;=&nbsp;(ip,&nbsp;port)<br>
 msg&nbsp;is&nbsp;an&nbsp;OSC&nbsp;message&nbsp;create&nbsp;with&nbsp;OSCMessage().</tt></dd></dl>
 
 <dl><dt><a name="Send-simple_send_to"><strong>simple_send_to</strong></a>(self, title, value, address)</dt><dd><tt>Create&nbsp;and&nbsp;send&nbsp;OSC&nbsp;message:<br>
