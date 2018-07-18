@@ -67,5 +67,5 @@ Thanks to:
 
 
 ### License
-Skandal is released under the GENERAL PUBLIC LICENSE Version 2, June 1991.
+blenderOSC is released under the GENERAL PUBLIC LICENSE Version 2, June 1991.
 See the bundled LICENSE file for details.
